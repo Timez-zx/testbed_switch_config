@@ -22,12 +22,14 @@ def getIfconfig():
     return dic
 
 def get_gatemac():
-    p = os.popen('arp _gateway', 'r', 1)
-    arp = p.read().split('\n\n')
+    p = os.popen('arp', 'r', 1)
+    arp = p.read().split('\n')
     data =  [i for i in arp if i and not i.startswith('lo')]
     for mac_line in data:
-        lines = mac_line.split('\n')
-        mac = lines[1].split()[2]
+        mac_list = mac_line.split()
+        if((mac_list[0] == '_gateway') & (mac_list[-1] != 'eno1')):
+            mac = mac_list[2]
+            break
     return mac
         
 
