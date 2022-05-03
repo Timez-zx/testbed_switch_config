@@ -53,6 +53,6 @@ if __name__ == '__main__':
     for i in range(1000):
         appendix = appendix + '0'
     for i in range(10000):
-        packet = Ether(src=mac, dst=gatemac)/IP(src=Source_ip, dst=Dst_ip)/UDP()/(str(i)+appendix)
+        packet = Ether(src=mac, dst=gatemac)/IP(src=Source_ip, dst=Dst_ip)/UDP(sport=10000, dport=10000)/(str(i)+appendix)
         packet_list.append(packet)
     sendpfast(packet_list, iface=interface, mbps = 100000, loop = 100)
