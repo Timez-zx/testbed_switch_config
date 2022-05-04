@@ -1,5 +1,41 @@
 import os
 import sys
+import telnetlib
+import time
+
+class TelnetClient():
+    def __init__(self,):
+        self.tn = telnetlib.Telnet()
+    
+    def login_host(self, host_ip, username, password, changepws):
+        try:
+            self.tn.open(host_ip, port=23)
+        except:
+            return False
+        self.tn.read_until(b'Username:', timeout=10)
+        self.tn.write(username.encode('ascii') +b'\n')
+        self.tn.read_until(b'Password:', timeout=10)
+        self.tn.write(password.encode('ascii') +b'\n')
+        self.tn.read_until(b'The passord needs to be changed. Change now? [Y/N]:', timeout=10)
+        self.tn.write(changepws.encode('ascii') +b'\n')
+        time.sleep(2)
+        command_result = self.tn.read_very_eager().decode('ascii')
+        if 'Login incorrect' not in command_result:
+            print('%sSuccess'%host_ip)
+            return True
+        else:
+            print("Fail login")
+            return False
+
+    def execute_some_command(self, command, interval = 0.5):
+        self.tn.write(command.encode('ascii')+b'\n')
+        time.sleep(interval)
+        command_result = self.tn.read_very_eager().decode('ascii')
+        print("Result: \n%s" % command_result)
+
+    def logout_host(self):
+        self.tn.write(b"exit\n")
+
 
 def acl_deploy(dele):
     basic_command = 'python3 /home/hw/tmp_share/hxc/exp_control-master/exp_control-master/switch_control/acl_hw.py '
@@ -20,7 +56,23 @@ def acl_deploy(dele):
         # print(command)
         os.system(command)
 
+def eth_trunk_leaf_hw():
+    host_ip = '10.174.216.35'
+    username = 'admin1234'
+    password = 'Oxc_2012'
+    command = []
+    command.append('sy')
+    command.append('clear configuration interface 100GE1/0/62')
+    command.append('N')
+    command.append('commit')
+    telnet_client = TelnetClient()
+    if telnet_client.login_host(host_ip, username, password, 'N'):
+        for cmd in command:
+            telnet_client.execute_some_command(cmd, interval=0.1)
+    else:
+        print('Failed to connect to switch')
+
 
 
 if __name__ == '__main__':
-    acl_deploy(0)
+    eth_trunk_leaf_hw()
