@@ -29,9 +29,9 @@ class TelnetClient():
 
     def execute_some_command(self, command, interval = 0.5):
         self.tn.write(command.encode('ascii')+b'\n')
-        if(command == 'Y')
-            time.sleep(1)
-        else
+        if(command == 'Y'):
+            time.sleep(2)
+        else:
             time.sleep(interval)
         command_result = self.tn.read_very_eager().decode('ascii')
         print("Result: \n%s" % command_result)
@@ -81,7 +81,7 @@ def eth_trunk_leaf_hw():
     telnet_client = TelnetClient()
     if telnet_client.login_host(host_ip, username, password, 'N'):
         for cmd in command:
-            telnet_client.execute_some_command(cmd, interval=0.1)
+            telnet_client.execute_some_command(cmd, interval=0.2)
     else:
         print('Failed to connect to switch')
 
@@ -105,7 +105,7 @@ def eth_trunk_spine_hw():
     telnet_client = TelnetClient()
     if telnet_client.login_host(host_ip, username, password, 'N'):
         for cmd in command:
-            telnet_client.execute_some_command(cmd, interval=0.1)
+            telnet_client.execute_some_command(cmd, interval=0.2)
     else:
         print('Failed to connect to switch')
 
@@ -113,4 +113,4 @@ def eth_trunk_spine_hw():
 if __name__ == '__main__':
     eth_trunk_leaf_hw()
     eth_trunk_spine_hw()
-    acl_deploy(0)
+    # acl_deploy(0)
