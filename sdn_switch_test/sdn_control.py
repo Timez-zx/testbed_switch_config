@@ -189,7 +189,7 @@ if __name__ == '__main__':
     if(int(argv[0]) == 1):
         eth_trunk_spine_add()
         eth_trunk_leaf_add()
-    else if(int(argv[0]) == 0):
+    elif(int(argv[0]) == 0):
         eth_trunk_spine_recover()
         eth_trunk_leaf_recover()
     else:
