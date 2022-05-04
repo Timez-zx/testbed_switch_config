@@ -29,7 +29,10 @@ class TelnetClient():
 
     def execute_some_command(self, command, interval = 0.5):
         self.tn.write(command.encode('ascii')+b'\n')
-        time.sleep(interval)
+        if(command == 'Y')
+            time.sleep(1)
+        else
+            time.sleep(interval)
         command_result = self.tn.read_very_eager().decode('ascii')
         print("Result: \n%s" % command_result)
 
