@@ -181,19 +181,79 @@ def eth_trunk_leaf_recover():
     else:
         print('Failed to connect to switch')
 
-if __name__ == '__main__':
-    argv = sys.argv[1:]
-    if(len(argv) < 1):
-        print("Please input the standard")
-        exit()
-    if(int(argv[0]) == 1):
-        eth_trunk_spine_add()
-        eth_trunk_leaf_add()
-    elif(int(argv[0]) == 0):
-        eth_trunk_spine_recover()
-        eth_trunk_leaf_recover()
+def leaf_back():
+    host_ip = '10.174.216.35'
+    username = 'admin1234'
+    password = 'Oxc_2012'
+    command = []
+    command.append('sy')
+    command.append('int eth-trunk 10')
+    command.append('undo trunkport 100GE1/0/62')
+    command.append('undo trunkport 100GE1/0/63')
+    command.append('q')
+    command.append('undo int eth-trunk 10')
+    command.append('commit')
+    command.append('int 100GE1/0/62')
+    command.append('undo portswitch')
+    command.append('ip address 172.166.14.2 24')
+    command.append('q')
+    command.append('commit')
+    command.append('int 100GE1/0/63')
+    command.append('undo portswitch')
+    command.append('ip address 172.166.15.2 24')
+    command.append('q')
+    command.append('commit')
+    telnet_client = TelnetClient()
+    if telnet_client.login_host(host_ip, username, password, 'N'):
+        for cmd in command:
+            telnet_client.execute_some_command(cmd, interval=0.2)
     else:
-        print("wrong input")     
+        print('Failed to connect to switch')
+
+
+def spine_back():
+    host_ip = '10.174.216.48'
+    username = 'admin1234'
+    password = 'Oxc_2012'
+    command = []
+    command.append('sy')
+    command.append('int eth-trunk 10')
+    command.append('undo trunkport 100GE1/0/30')
+    command.append('undo trunkport 100GE1/0/31')
+    command.append('q')
+    command.append('undo int eth-trunk 10')
+    command.append('commit')
+    command.append('int 100GE1/0/30')
+    command.append('undo portswitch')
+    command.append('ip address 172.166.14.1 24')
+    command.append('q')
+    command.append('commit')
+    command.append('int 100GE1/0/31')
+    command.append('undo portswitch')
+    command.append('ip address 172.166.15.1 24')
+    command.append('q')
+    command.append('commit')
+    telnet_client = TelnetClient()
+    if telnet_client.login_host(host_ip, username, password, 'N'):
+        for cmd in command:
+            telnet_client.execute_some_command(cmd, interval=0.2)
+    else:
+        print('Failed to connect to switch')
+if __name__ == '__main__':
+    leaf_back()
+    spine_back()
+    # argv = sys.argv[1:]
+    # if(len(argv) < 1):
+    #     print("Please input the standard")
+    #     exit()
+    # if(int(argv[0]) == 1):
+    #     eth_trunk_spine_add()
+    #     eth_trunk_leaf_add()
+    # elif(int(argv[0]) == 0):
+    #     eth_trunk_spine_recover()
+    #     eth_trunk_leaf_recover()
+    # else:
+    #     print("wrong input")     
     # eth_trunk_leaf_hw()
     # eth_trunk_spine_hw()
     # acl_deploy(0)
