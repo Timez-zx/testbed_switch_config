@@ -20,6 +20,7 @@ class TelnetClient():
         time.sleep(0.5)
         self.tn.read_until(b'Password:', timeout=10)
         self.tn.write(password.encode('ascii') + b'\n')
+        return True
 
     def execute_some_command(self, command, interval=0.5):
         self.tn.write(command.encode('ascii') + b'\n')
@@ -94,7 +95,7 @@ def public_acl_rg():
         commands.append("no redirect destination interface %s acl %s in" % (output_interface, table_label))
         commands.append("redirect destination interface %s acl %s in" % (output_interface, table_label))
         commands.append('exit')
-        commands.append('show redirect')
+        commands.append('show redirect interface %s' % input_interface)
 
         
     commands.append('exit')
