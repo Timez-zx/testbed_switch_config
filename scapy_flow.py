@@ -48,4 +48,4 @@ if __name__ == '__main__':
     for i in range(10000):
         packet = Ether(src=mac, dst=gatemac)/IP(src=Source_ip, dst=Dst_ip)/UDP()/(str(i)+appendix)
         packet_list.append(packet)
-    sendpfast(packet_list, iface=interface, mps = 100000, loop = 100)
+    sendpfast(packet_list, iface=interface, mbps = 100000, loop = 100)
