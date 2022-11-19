@@ -23,11 +23,13 @@ def find_rout_loss(table):
         if(len(rule) == 1):
             lost_ip.append(table[key])
             continue
-    
-    print("IP who lost table")
-    for ip in lost_ip:
-        print(ip)
-        
+    if(len(lost_ip) == 0):
+        print("No IP table lost")
+    else:
+        print("IP who lost table:")
+        for ip in lost_ip:
+            print(ip)
+            
 
 
 
