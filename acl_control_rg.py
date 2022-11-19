@@ -33,70 +33,45 @@ class TelnetClient():
 
 
 
-def public_acl_rg():
+def public_acl_rg(just_del):
     host_ip = '10.174.216.49'
     password = 'Oxc_2012'
 
     commands = []
-
-    # node6 --- host0  192.168.1.3~9
-    ip_dic0 = {'192.168.1.2':'ens12f0', '192.168.1.3':'ens12f1', '192.168.1.4':'ens11f0', '192.168.1.5':'ens11f1',
-             '192.168.1.6':'ens10f0', '192.168.1.7':'ens10f1', '192.168.1.8':'enp41s0f0', '192.168.1.9':'enp41s0f1'}
-    # node7 --- host1  192.168.2.3~9
-    ip_dic1 = {'192.168.2.2':'ens12f0', '192.168.2.3':'ens12f1', '192.168.2.4':'ens11f0', '192.168.2.5':'ens11f1',
-             '192.168.2.6':'ens10f0', '192.168.2.7':'ens10f1', '192.168.2.8':'enp41s0f0', '192.168.2.9':'enp41s0f1'}
-    # node5 --- host2  192.168.3.3~9
-    ip_dic2 = {'192.168.3.2':'ens12f0', '192.168.3.3':'ens12f1', '192.168.3.4':'ens11f0', '192.168.3.5':'ens11f1',
-             '192.168.3.6':'ens10f0', '192.168.3.7':'ens10f1', '192.168.3.8':'enp41s0f0', '192.168.3.9':'enp41s0f1'}
-    # node0 --- host3  192.168.4.3~9
-    ip_dic3 = {'192.168.4.2':'ens12f0', '192.168.4.3':'ens12f1', '192.168.4.4':'ens11f0', '192.168.4.5':'ens11f1',
-             '192.168.4.6':'ens10f0', '192.168.4.7':'ens10f1', '192.168.4.8':'enp41s0f0', '192.168.4.9':'enp41s0f1'}
-    # node6 --- host0  192.168.1.3~9
-    host0 = {'ens12f0': 'Hu0/1', 'ens12f1': 'Hu0/37', 'ens11f0': 'Hu0/3', 'ens11f1': 'Hu0/4',
-             'ens10f0': 'Hu0/5', 'ens10f1': 'Hu0/6', 'enp41s0f0': 'Hu0/34', 'enp41s0f1': 'Hu0/8'}
-    # node7 --- host1  192.168.2.3~9
-    host1 = {'ens12f0': 'Hu0/9', 'ens12f1': 'Hu0/10', 'ens11f0': 'Hu0/36', 'ens11f1': 'Hu0/42',
-             'ens10f0': 'Hu0/13', 'ens10f1': 'Hu0/14', 'enp41s0f0': 'Hu0/15', 'enp41s0f1': 'Hu0/16'}
-    # node5 --- host2  192.168.3.3~9
-    host2 = {'ens12f0': 'Hu0/17', 'ens12f1': 'Hu0/18', 'ens11f0': 'Hu0/19', 'ens11f1': 'Hu0/35',
-             'ens10f0': 'Hu0/21', 'ens10f1': 'Hu0/22', 'enp41s0f0': 'Hu0/23', 'enp41s0f1': 'Hu0/24'}
-    # node0 --- host3  192.168.4.3~9
-    host3 = {'ens12f0': 'Hu0/25', 'ens12f1': 'Hu0/26', 'ens11f0': 'Hu0/27', 'ens11f1': 'Hu0/28',
-             'ens10f0': 'Hu0/29', 'ens10f1': 'Hu0/39', 'enp41s0f0': 'Hu0/40', 'enp41s0f1': 'Hu0/32'}
-
-    out_port = {}
-    for i in range(49, 65):
-        out_port[i] = 'Hu0/' + str(i)
-
-    host_port = [host0, host1, host2, host3]
-    ip_dict = [ip_dic0, ip_dic1, ip_dic2, ip_dic3]
-    # [index_number, src_ip, next_port, table_label]
-    # index_number: machine number, if 0, index the information in first machie in the host_port and ip_dict
-    # table_label:  rg switch's label is different from hw, standard table label is 1-99, 1300-1999 extended is larger than 99
-    acl_rules = [[0, '192.168.1.3', 61, '10']]
+    # name: route-map name
+    # the policy number in a route-map
+    # source ip
+    # redirect ip
+    # interface
+    # acl_number
+    acl_rules = [['vlan_10_acl', '10', '192.168.1.3', '172.167.5.1', 'vlan 10', '10']]
 
     commands.append('config')
     for rule in acl_rules:
-        host_index = rule[0]
-
-        src_ip = rule[1]
-        dst_port = rule[2]
-        table_label = rule[3]
-
-        commands.append("no ip access-list standard %s" % table_label)
-        commands.append("ip access-list standard %s" % table_label)
-        commands.append("permit %s %s" % (src_ip, '255.255.255.255'))
+        route_map_name = rule[0]
+        route_rule_num = rule[1]
+        source_ip = rule[2]
+        redirect_ip = rule[3]
+        interface = rule[4]
+        acl_num = rule[5]
+        commands.append("no access-list %s" % acl_num)
+        commands.append("interface %s" % interface)
+        commands.append("no ip policy route-map")
         commands.append("exit")
-        commands.append('show access-lists')
+        commands.append("no route-map %s" % route_map_name)
 
-        input_interface = host_port[host_index][ip_dict[host_index][src_ip]]
-        output_interface = out_port[dst_port]
-        commands.append("interface %s" % input_interface)
-        commands.append("no redirect destination interface %s acl %s in" % (output_interface, table_label))
-        commands.append("redirect destination interface %s acl %s in" % (output_interface, table_label))
-        commands.append('exit')
-        commands.append('show redirect interface %s' % input_interface)
-
+        if(just_del == 0):
+            commands.append("ip access-list standard %s" % acl_num)
+            commands.append("permit %s 0.0.0.0" % source_ip)
+            commands.append("exit")
+            commands.append("route-map %s permit %s" %(route_map_name, route_rule_num))
+            commands.append("match ip address %s" % acl_num)
+            commands.append("set ip next-hop %s" % redirect_ip)
+            commands.append("exit")
+            commands.append("interface %s" % interface)
+            commands.append("ip policy route-map %s" % route_map_name)
+            commands.append("exit")
+        
         
     commands.append('exit')
     commands.append('exit')
