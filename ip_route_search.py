@@ -12,12 +12,27 @@ def get_table():
         ip = line.split()[-3]
         if(num not in table):
             if((num[0] == '4') & (ip[0] == '1') ):
-                table[ip] = num
-         
+                table[num] = ip 
     return table
+
+def find_rout_loss(table):
+    lost_ip = []
+    for key in table.keys():
+        p = os.popen("ip route list table %s" % key, 'r', 1)
+        rule = p.read().split('\n')
+        if(len(rule) == 1):
+            lost_ip.append(table[key])
+            continue
+    
+    print("IP who lost table")
+    for ip in lost_ip:
+        print(ip)
+        
+
+
 
 
         
 
 if __name__ == '__main__':
-    print(get_table())
+    find_rout_loss(get_table())
