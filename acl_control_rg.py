@@ -88,7 +88,7 @@ def public_acl_rg(just_del):
 
 
 if __name__ == "__main__":
-    public_acl_rg()
+    public_acl_rg(0)
 
 
 
