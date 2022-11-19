@@ -56,9 +56,9 @@ def ip_config():
     commands = []
     port_list = []
     ip_list = []
-    for i in range(50, 65):
+    for i in range(49, 65):
         port_list.append(i)
-    for i in range(2, 17):
+    for i in range(1, 17):
         ip_list.append(i)
     commands.append('config')
     for port_num in range(len(port_list)):
