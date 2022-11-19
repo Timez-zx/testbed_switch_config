@@ -2,7 +2,7 @@
 #encoding: utf-8
  
 import os
-
+from scapy.all import *
 
 
 def getIfconfig():
@@ -32,4 +32,20 @@ def get_gatemac():
 
 
 if __name__ == '__main__':
-    print(get_gatemac())
+    ip_dic = getIfconfig()
+    gatemac = get_gatemac()
+
+    Source_ip = '192.168.1.3'
+    Dst_ip = '192.168.6.8'
+
+    interface = ip_dic[Source_ip][0]
+    mac = ip_dic[Source_ip][1]
+
+    packet_list = []
+    appendix = '0'
+    for i in range(1000):
+        appendix = appendix + '0'
+    for i in range(10000):
+        packet = Ether(src=mac, dst=gatemac)/IP(src=Source_ip, dst=Dst_ip)/UDP()/(str(i)+appendix)
+        packet_list.append(packet)
+    sendpfast(packet_list, iface=interface, mps = 100000, loop = 100)
