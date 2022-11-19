@@ -2,6 +2,7 @@
 #encoding: utf-8
  
 import os
+import sys
 from scapy.all import *
 
 
@@ -32,11 +33,15 @@ def get_gatemac():
 
 
 if __name__ == '__main__':
+    argv = sys.argv[1:]
+    if(len(argv) < 2):
+        print("Please input the src and dst ip")
+        exit()
     ip_dic = getIfconfig()
     gatemac = get_gatemac()
 
-    Source_ip = '192.168.1.3'
-    Dst_ip = '192.168.6.8'
+    Source_ip = argv[0]
+    Dst_ip = argv[1]
 
     interface = ip_dic[Source_ip][0]
     mac = ip_dic[Source_ip][1]
