@@ -12,7 +12,8 @@ def ssh_connect(ip, passwd, ip_net):
     )
     stdin,stdout,stderr = ssh.exec_command("python3 /home/hw/tmp_share/switch-control/rg/ping_test.py %s" % ip_net)
     result = stdout.read().decode()
-    print(ip, result)
+    print(ip)
+    print(result)
 
 if __name__ == '__main__':
     passwd = "Huawei12#$"
