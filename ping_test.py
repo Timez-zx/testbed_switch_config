@@ -1,4 +1,5 @@
 import os
+import sys
 
 def ping_test(host_ip_num):
     diconnect_pairs = []
@@ -15,4 +16,8 @@ def ping_test(host_ip_num):
     for pair in diconnect_pairs:
         print("from %s to %s has problem" % pair)
 if __name__ == '__main__':
-    ping_test()
+    argv = sys.argv[1:]
+    if(len(argv) < 1):
+        print("Please input the net_ip of the host")
+        exit()
+    ping_test(argv[0])
