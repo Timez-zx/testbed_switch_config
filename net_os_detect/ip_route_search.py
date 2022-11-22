@@ -31,10 +31,5 @@ def find_rout_loss(table):
             print(ip)
             
 
-
-
-
-        
-
 if __name__ == '__main__':
     find_rout_loss(get_table())
