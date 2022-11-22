@@ -6,7 +6,7 @@ def ping_test(host_ip_num, src_nic):
     diconnect_pairs = []
     src_nic_ip = "192.168.%s.%s" % (host_ip_num, str(src_nic))
     for dst_net in range(1, 9):
-        if((dst_net != 5) & (dst_net != host_ip_num)):
+        if((dst_net != 5) & (dst_net != int(host_ip_num))):
             for dst_nic in range(2, 10):
                 dst_nic_ip = "192.168.%s.%s" % (str(dst_net), str(dst_nic))
                 output = os.popen("ping -I %s %s -W 1 -c 1" % (src_nic_ip, dst_nic_ip), 'r', 1)
